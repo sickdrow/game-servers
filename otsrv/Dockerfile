@@ -1,14 +1,13 @@
-FROM alpine:3.19 AS build
-RUN apk add --no-cache \
-  build-base \
-  boost-dev \
+FROM ubuntu:22.04 AS build
+RUN apt-get update && apt-get install -y \
+  build-essential \
+  libboost-all-dev \
   cmake \
-  fmt-dev \
-  luajit-dev \
-  mariadb-connector-c-dev \
-  openssl-dev \
-  pugixml-dev \
-  samurai
+  libfmt-dev \
+  libluajit-5.1-dev \
+  libmariadb-dev \
+  libssl-dev \
+  libpugixml-dev
 
 COPY cmake /usr/src/forgottenserver/cmake/
 COPY src /usr/src/forgottenserver/src/
@@ -16,16 +15,13 @@ COPY CMakeLists.txt CMakePresets.json /usr/src/forgottenserver/
 WORKDIR /usr/src/forgottenserver
 RUN cmake --preset default -DUSE_LUAJIT=ON && cmake --build --config RelWithDebInfo --preset default
 
-FROM alpine:3.19
-RUN apk add --no-cache \
-  boost-iostreams \
-  boost-locale \
-  boost-system \
-  fmt \
-  luajit \
-  mariadb-connector-c \
-  openssl \
-  pugixml
+FROM ubuntu:22.04
+RUN apt-get update && apt-get install -y \
+  libfmt7 \
+  libluajit-5.1-2 \
+  libmariadb3 \
+  libssl1.1 \
+  libpugixml1.11
 
 COPY --from=build /usr/src/forgottenserver/build/RelWithDebInfo/tfs /bin/tfs
 COPY data /srv/data/
