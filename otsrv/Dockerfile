@@ -29,9 +29,9 @@ RUN apk add --no-cache \
 
 COPY --from=build /usr/src/forgottenserver/build/RelWithDebInfo/tfs /bin/tfs
 COPY data /srv/data/
-COPY LICENSE README.md *.dist *.sql key.pem /srv/
+COPY *.dist *.sql key.pem /server/
 
 EXPOSE 7171 7172
-WORKDIR /srv
-VOLUME /srv
+WORKDIR /server
+VOLUME /server
 ENTRYPOINT ["/bin/tfs"]
