@@ -27,7 +27,7 @@ RUN git clone https://github.com/znote/ZNoteACC.git .
 # Kopiujemy przykładowy plik konfiguracyjny Apache do ustawienia mod_rewrite
 COPY apache2.conf /etc/apache2/apache2.conf
 
-# Otwieramy port 80, który będzie używany przez Apache
+# Otwieramy port 8080, który będzie używany przez Apache
 EXPOSE 8080
 
 # Startujemy serwer Apache
