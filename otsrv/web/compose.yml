@@ -1,33 +1,29 @@
 name: otsrv-web
-
 services:
-  service:
-    image: nginx:latest
-    container_name: otsrv-web
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
     ports:
       - "8080:80"
-    volumes:
-      - ./nginx.conf:/etc/nginx/nginx.conf
-      - ./html:/var/www/html
     depends_on:
-      - php
-
-  php:
-    build: .
-    container_name: otsrv-php
-    volumes:
-      - ./html:/var/www/html
-
-  db:
-    image: mariadb:latest
-    container_name: osrv-db
+      - db
     environment:
-      MYSQL_ROOT_PASSWORD: root_password
-      MYSQL_DATABASE: znoteaac
-      MYSQL_USER: znoteaac_user
-      MYSQL_PASSWORD: znoteaac_password
+      MYSQL_HOST: mysql
+      MYSQL_USER: root
+      MYSQL_PASSWORD: example
+      MYSQL_DATABASE: znoteacc
+  db:
+    image: mysql:5.7
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: example
+      MYSQL_DATABASE: znoteacc
+    ports:
+      - "3306:3306"
     volumes:
-      - db_data:/var/lib/mysql
+      - mysql_data:/var/lib/mysql
 
 volumes:
-  db_data:
+  mysql_data:
+    driver: local

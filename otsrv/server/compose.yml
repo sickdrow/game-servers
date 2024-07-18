@@ -8,5 +8,5 @@ services:
       - "7171:7171"
       - "7172:7172"
     volumes:
-      - ./data:/forgottenserver/data
+      - ./data:/forgottenserver
     restart: always
