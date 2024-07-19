@@ -1,0 +1,16 @@
+FROM php:7.4-apache
+
+RUN apt-get update && apt-get install -y \
+    libpng-dev \
+    libjpeg-dev \
+    libfreetype6-dev \
+    libxml2-dev \
+    && docker-php-ext-configure gd --with-freetype --with-jpeg \
+    && docker-php-ext-install gd mysqli xml
+
+RUN apt-get clean && rm -rf /var/lib/apt/lists/*
+
+# Skopiuj pliki MyAAC z repozytorium GitHub do kontenera
+RUN git clone https://github.com/slawkens/myaac.git /var/www/html
+
+RUN chown -R www-data:www-data /var/www/html/

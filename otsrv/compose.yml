@@ -1,0 +1,61 @@
+name: otsrv 
+services:
+  otserver:
+    build: .
+    ports:
+      - "7171:7171"
+      - "7172:7172"
+    volumes:
+      - ./data:/opt/otserver/data
+      - ./config.lua:/opt/otserver/config.lua
+    environment:
+      MYSQL_ROOT_PASSWORD: example
+      MYSQL_DATABASE: otserv
+      MYSQL_USER: otuser
+      MYSQL_PASSWORD: example
+    depends_on:
+      - db
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.otserver.rule=Host(`otsrv.minisquere.com`)"
+      - "traefik.http.routers.otserver.entrypoints=websecure"
+      - "traefik.http.routers.otserver.tls.certresolver=myresolver"
+    networks:
+      - bridge-proxy
+
+  accmaker:
+    build: ./accmaker
+    environment:
+      - DB_HOST=db
+      - DB_USER=otuser
+      - DB_PASS=example
+      - DB_NAME=otserv
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.accmaker.rule=Host(`otsrv.minisquere.com`) && PathPrefix(`/acc`)"
+      - "traefik.http.routers.accmaker.entrypoints=websecure"
+      - "traefik.http.routers.accmaker.tls.certresolver=myresolver"
+    networks:
+      - bridge-proxy
+    depends_on:
+      - db
+
+  db:
+    image: mysql:5.7
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: example
+      MYSQL_DATABASE: otserv
+      MYSQL_USER: otuser
+      MYSQL_PASSWORD: example
+    volumes:
+      - db_data:/var/lib/mysql
+    networks:
+      - bridge-proxy
+
+networks:
+  bridge-proxy:
+    external: true
+
+volumes:
+  db_data:
