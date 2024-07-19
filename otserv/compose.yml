@@ -1,0 +1,42 @@
+name: otserv
+services:
+  server:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - "7171:7171"   # Adjust according to your server's needs
+      - "8080:8080"   # Adjust according to your server's needs
+    volumes:
+      - server-data:/opt/forgottenserver-master/data   # Adjust the path if needed
+    environment:
+      - MYSQL_HOST=mysql
+      - MYSQL_USER=root
+      - MYSQL_PASSWORD=password
+      - MYSQL_DATABASE=tibiadb  # Example database name, adjust as needed
+    depends_on:
+      - mysql
+    networks:
+      - bridge-proxy
+
+  mysql:
+    image: mysql:8.0
+    environment:
+      MYSQL_ROOT_PASSWORD: password
+      MYSQL_DATABASE: tibiadb  # Example database name, adjust as needed
+      MYSQL_USER: root
+      MYSQL_PASSWORD: password
+    ports:
+      - "3306:3306"
+    volumes:
+      - mysql-data:/var/lib/mysql
+
+volumes:
+  server-data:
+    driver: local
+  mysql-data:
+    driver: local
+
+networks:
+  bridge-proxy:
+    external: true
