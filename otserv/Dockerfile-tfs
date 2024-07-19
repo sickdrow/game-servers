@@ -1,0 +1,31 @@
+# Dockerfile for The Forgotten Server
+FROM alpine:latest
+
+# Install dependencies
+RUN apk update && apk add --no-cache \
+    build-base \
+    cmake \
+    mysql-client \
+    mysql-dev \
+    libmagic \
+    libxml2-dev \
+    zlib-dev \
+    pcre-dev \
+    bzip2-dev \
+    git \
+    bash
+
+# Clone and build The Forgotten Server
+RUN git clone https://github.com/forgottenserver/forgottenserver.git /forgottenserver
+WORKDIR /forgottenserver
+RUN mkdir build && cd build && cmake .. && make && make install
+
+# Set environment variables
+ENV TFS_ROOT=/forgottenserver
+ENV CONFIG_FILE=/forgottenserver/config.lua
+
+# Expose TFS port
+EXPOSE 7171
+
+# Default command
+CMD ["sh", "-c", "/forgottenserver/bin/forgottenserver"]

@@ -1,0 +1,48 @@
+version: '3.8'
+
+services:
+  tfs:
+    build:
+      context: .
+      dockerfile: Dockerfile-tfs
+    depends_on:
+      - db
+    environment:
+      - DB_HOST=db
+      - DB_USER=tfsuser
+      - DB_PASSWORD=tfspassword
+      - DB_NAME=tfs
+    ports:
+      - "7171:7171"
+    volumes:
+      - tfs_data:/forgottenserver/data
+
+  db:
+    build:
+      context: .
+      dockerfile: Dockerfile-mysql
+    environment:
+      MYSQL_ROOT_PASSWORD: rootpassword
+      MYSQL_DATABASE: tfs
+      MYSQL_USER: tfsuser
+      MYSQL_PASSWORD: tfspassword
+    ports:
+      - "3306:3306"
+    volumes:
+      - db_data:/var/lib/mysql
+
+  web:
+    build:
+      context: .
+      dockerfile: Dockerfile-web
+    depends_on:
+      - tfs
+    ports:
+      - "80:80"
+    volumes:
+      - myacc_data:/var/www/myacc
+
+volumes:
+  tfs_data:
+  db_data:
+  myacc_data:
