@@ -1,0 +1,27 @@
+name: otsrv-db
+
+services:
+  mariadb:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: mariadb
+    environment:
+      MYSQL_ROOT_PASSWORD: root_password
+      MYSQL_DATABASE: example_db
+      MYSQL_USER: example_user
+      MYSQL_PASSWORD: example_password
+    ports:
+      - "3306:3306"
+    volumes:
+      - mariadb_data:/var/lib/mysql
+    networks:
+      - bridge-proxy
+
+volumes:
+  mariadb_data:
+    driver: local
+
+networks:
+  bridge-proxy:
+    driver: bridge

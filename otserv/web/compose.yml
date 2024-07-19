@@ -1,0 +1,20 @@
+name: otsrv-web
+
+services:
+  apache:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: apache
+    networks:
+      - bridge-proxy
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.apache.rule=Host(`your-domain.com`)"
+      - "traefik.http.services.apache.loadbalancer.server.port=80"
+    volumes:
+      - ./app:/var/www/html
+
+networks:
+  bridge-proxy:
+    driver: bridge

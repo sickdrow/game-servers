@@ -1,0 +1,12 @@
+name: otsrv
+
+services:
+  server:
+    build: .
+    container_name: otsrv
+    ports:
+      - "7171:7171"
+      - "7172:7172"
+    volumes:
+      - ./data:/forgottenserver
+    restart: always
