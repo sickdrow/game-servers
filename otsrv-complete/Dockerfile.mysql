@@ -1,0 +1,9 @@
+# Wybieramy bazowy obraz MySQL
+FROM mysql:5.7
+
+# Ustawiamy hasło dla root
+ENV MYSQL_ROOT_PASSWORD=rootpassword
+ENV MYSQL_DATABASE=otserv
+
+# Dodajemy konfigurację (opcjonalne)
+COPY my.cnf /etc/mysql/my.cnf

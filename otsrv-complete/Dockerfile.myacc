@@ -1,0 +1,29 @@
+# Wybieramy bazowy obraz Ubuntu
+FROM ubuntu:16.04
+
+# Instalujemy wymagane pakiety
+RUN apt-get update && \
+    apt-get install -y \
+    git \
+    php \
+    php-mysql \
+    php-fpm \
+    php-gd \
+    php-xml \
+    php-mbstring \
+    && apt-get clean
+
+# Pobieramy kod źródłowy z GitHub
+RUN git clone https://github.com/slawkens/myaac.git /myaac
+
+# Przechodzimy do katalogu z kodem źródłowym
+WORKDIR /myaac
+
+# Instalujemy zależności
+RUN composer install
+
+# Eksponujemy port 80 (domyślny port dla MyAAC)
+EXPOSE 80
+
+# Definiujemy punkt wejścia
+CMD ["php", "-S", "0.0.0.0:80", "-t", "public"]

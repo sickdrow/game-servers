@@ -1,0 +1,33 @@
+# Wybieramy bazowy obraz Ubuntu
+FROM ubuntu:16.04
+
+# Ustawiamy zmienną środowiskową dla UTF-8
+ENV LANG C.UTF-8
+
+# Instalujemy wymagane pakiety
+RUN apt-get update && \
+    apt-get install -y \
+    git \
+    build-essential \
+    cmake \
+    libmysqlclient-dev \
+    libssl-dev \
+    libsqlite3-dev \
+    zlib1g-dev \
+    libpcre3-dev \
+    && apt-get clean
+
+# Pobieramy kod źródłowy z GitHub
+RUN git clone https://github.com/otland/forgottenserver.git /ots
+
+# Przechodzimy do katalogu z kodem źródłowym
+WORKDIR /ots
+
+# Budujemy projekt
+RUN mkdir build && cd build && cmake .. && make
+
+# Eksponujemy port 7171 (domyślny port dla OTS)
+EXPOSE 7171
+
+# Definiujemy punkt wejścia
+ENTRYPOINT ["./forgottenserver/build/forgottenserver"]

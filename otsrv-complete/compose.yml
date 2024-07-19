@@ -1,0 +1,43 @@
+name: tibia
+
+services:
+  otserver:
+    build:
+      context: .
+      dockerfile: Dockerfile.otsrv-complete
+    ports:
+      - "7171:7171"
+    depends_on:
+      - mysql
+    networks:
+      - ots_network
+
+  mysql:
+    build:
+      context: .
+      dockerfile: Dockerfile.mysql
+    environment:
+      MYSQL_ROOT_PASSWORD: rootpassword
+      MYSQL_DATABASE: otserv
+    volumes:
+      - mysql_data:/var/lib/mysql
+    networks:
+      - ots_network
+
+  myaac:
+    build:
+      context: .
+      dockerfile: Dockerfile.myaac
+    ports:
+      - "8080:80"
+    depends_on:
+      - mysql
+    networks:
+      - ots_network
+
+networks:
+  ots_network:
+    driver: bridge
+
+volumes:
+  mysql_data:
